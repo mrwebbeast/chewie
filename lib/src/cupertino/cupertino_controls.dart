@@ -22,7 +22,7 @@ class CupertinoControls extends StatefulWidget {
     this.backgroundColor,
     this.iconColor,
     this.showPlayButton = true,
-    this.showSkipFrames = true,
+    this.showSkipFrames = false,
     super.key,
   });
 
