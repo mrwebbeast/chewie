@@ -19,15 +19,17 @@ import 'package:video_player/video_player.dart';
 
 class CupertinoControls extends StatefulWidget {
   const CupertinoControls({
-    required this.backgroundColor,
-    required this.iconColor,
+    this.backgroundColor,
+    this.iconColor,
     this.showPlayButton = true,
+    this.showSkipFrames = true,
     super.key,
   });
 
-  final Color backgroundColor;
-  final Color iconColor;
+  final Color? backgroundColor;
+  final Color? iconColor;
   final bool showPlayButton;
+  final bool showSkipFrames;
 
   @override
   State<StatefulWidget> createState() {
@@ -35,8 +37,7 @@ class CupertinoControls extends StatefulWidget {
   }
 }
 
-class _CupertinoControlsState extends State<CupertinoControls>
-    with SingleTickerProviderStateMixin {
+class _CupertinoControlsState extends State<CupertinoControls> with SingleTickerProviderStateMixin {
   late PlayerNotifier notifier;
   late VideoPlayerValue _latestValue;
   double? _latestVolume;
@@ -55,6 +56,9 @@ class _CupertinoControlsState extends State<CupertinoControls>
   // We know that _chewieController is set in didChangeDependencies
   ChewieController get chewieController => _chewieController!;
   ChewieController? _chewieController;
+  late Color backgroundColor = widget.backgroundColor ?? const Color.fromRGBO(41, 41, 41, 0.7);
+  late Color iconColor = widget.iconColor ?? const Color.fromARGB(255, 200, 200, 200);
+  late bool showSkipFrames = widget.showSkipFrames;
 
   @override
   void initState() {
@@ -79,8 +83,6 @@ class _CupertinoControlsState extends State<CupertinoControls>
             );
     }
 
-    final backgroundColor = widget.backgroundColor;
-    final iconColor = widget.iconColor;
     final orientation = MediaQuery.of(context).orientation;
     final barHeight = orientation == Orientation.portrait ? 30.0 : 47.0;
     final buttonPadding = orientation == Orientation.portrait ? 16.0 : 24.0;
@@ -178,8 +180,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
             useRootNavigator: chewieController.useRootNavigator,
             builder: (context) => CupertinoOptionsDialog(
               options: options,
-              cancelButtonText:
-                  chewieController.optionsTranslation?.cancelButtonText,
+              cancelButtonText: chewieController.optionsTranslation?.cancelButtonText,
             ),
           );
           if (_latestValue.isPlaying) {
@@ -274,9 +275,9 @@ class _CupertinoControlsState extends State<CupertinoControls>
                       )
                     : Row(
                         children: <Widget>[
-                          _buildSkipBack(iconColor, barHeight),
+                          if (showSkipFrames) _buildSkipBack(iconColor, barHeight),
                           _buildPlayPause(controller, iconColor, barHeight),
-                          _buildSkipForward(iconColor, barHeight),
+                          if (showSkipFrames) _buildSkipForward(iconColor, barHeight),
                           _buildPosition(iconColor),
                           _buildProgressBar(),
                           _buildRemaining(iconColor),
@@ -284,8 +285,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
                           if (chewieController.allowPlaybackSpeedChanging)
                             _buildSpeedButton(controller, iconColor, barHeight),
                           if (chewieController.additionalOptions != null &&
-                              chewieController
-                                  .additionalOptions!(context).isNotEmpty)
+                              chewieController.additionalOptions!(context).isNotEmpty)
                             _buildOptionsButton(iconColor, barHeight),
                         ],
                       ),
@@ -347,8 +347,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
 
   Widget _buildHitArea() {
     final bool isFinished = _latestValue.position >= _latestValue.duration;
-    final bool showPlayButton =
-        widget.showPlayButton && !_latestValue.isPlaying && !_dragging;
+    final bool showPlayButton = widget.showPlayButton && !_latestValue.isPlaying && !_dragging;
 
     return GestureDetector(
       onTap: _latestValue.isPlaying
@@ -361,8 +360,8 @@ class _CupertinoControlsState extends State<CupertinoControls>
               });
             },
       child: CenterPlayButton(
-        backgroundColor: widget.backgroundColor,
-        iconColor: widget.iconColor,
+        backgroundColor: backgroundColor,
+        iconColor: iconColor,
         isFinished: isFinished,
         isPlaying: controller.value.isPlaying,
         show: showPlayButton,
@@ -753,8 +752,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
   Future<void> _skipBack() async {
     _cancelAndRestartTimer();
     final beginning = Duration.zero.inMilliseconds;
-    final skip =
-        (_latestValue.position - const Duration(seconds: 15)).inMilliseconds;
+    final skip = (_latestValue.position - const Duration(seconds: 15)).inMilliseconds;
     await controller.seekTo(Duration(milliseconds: math.max(skip, beginning)));
     // Restoring the video speed to selected speed
     // A delay of 1 second is added to ensure a smooth transition of speed after reversing the video as reversing is an asynchronous function
@@ -766,8 +764,7 @@ class _CupertinoControlsState extends State<CupertinoControls>
   Future<void> _skipForward() async {
     _cancelAndRestartTimer();
     final end = _latestValue.duration.inMilliseconds;
-    final skip =
-        (_latestValue.position + const Duration(seconds: 15)).inMilliseconds;
+    final skip = (_latestValue.position + const Duration(seconds: 15)).inMilliseconds;
     await controller.seekTo(Duration(milliseconds: math.min(skip, end)));
     // Restoring the video speed to selected speed
     // A delay of 1 second is added to ensure a smooth transition of speed after forwarding the video as forwaring is an asynchronous function
@@ -844,8 +841,7 @@ class _PlaybackSpeedDialog extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (e == _selected)
-                    Icon(Icons.check, size: 20.0, color: selectedColor),
+                  if (e == _selected) Icon(Icons.check, size: 20.0, color: selectedColor),
                   Text(e.toString()),
                 ],
               ),
