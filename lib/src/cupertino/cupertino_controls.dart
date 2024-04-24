@@ -24,12 +24,14 @@ class CupertinoControls extends StatefulWidget {
     this.showPlayButton = true,
     this.showSkipFrames = false,
     super.key,
+    this.dragging,
   });
 
   final Color? backgroundColor;
   final Color? iconColor;
   final bool showPlayButton;
   final bool showSkipFrames;
+  final bool? dragging;
 
   @override
   State<StatefulWidget> createState() {
@@ -45,7 +47,7 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
   final marginSize = 5.0;
   Timer? _expandCollapseTimer;
   Timer? _initTimer;
-  bool _dragging = false;
+  late bool _dragging = widget.dragging ?? false;
   Duration? _subtitlesPosition;
   bool _subtitleOn = false;
   Timer? _bufferingDisplayTimer;
