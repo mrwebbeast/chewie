@@ -159,15 +159,15 @@
     },
     {
       "name": "package_info_plus",
-      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/package_info_plus-7.0.0",
+      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/package_info_plus-6.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "package_info_plus_platform_interface",
-      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-3.0.0",
+      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-2.0.1",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "2.12"
     },
     {
       "name": "path",
@@ -320,7 +320,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-04-23T07:29:50.110889Z",
+  "generated": "2024-04-24T13:36:30.012654Z",
   "generator": "pub",
   "generatorVersion": "3.3.4"
 }

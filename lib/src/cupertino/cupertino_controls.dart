@@ -734,12 +734,13 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
         notifier.hideStuff = false;
         _hideTimer?.cancel();
         controller.pause();
+        _chewieController?.onTap?.call();
       } else {
         _cancelAndRestartTimer();
-
         if (!controller.value.isInitialized) {
           controller.initialize().then((_) {
             controller.play();
+            _chewieController?.onTap?.call();
           });
         } else {
           if (isFinished) {
