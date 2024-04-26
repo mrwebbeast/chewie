@@ -106,12 +106,6 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  _buildTopBar(
-                    backgroundColor,
-                    iconColor,
-                    barHeight,
-                    buttonPadding,
-                  ),
                   const Spacer(),
                   if (_subtitleOn)
                     Transform.translate(
@@ -121,7 +115,7 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
                       ),
                       child: _buildSubtitles(chewieController.subtitle!),
                     ),
-                  _buildBottomBar(backgroundColor, iconColor, barHeight),
+                  _buildBottomBar(backgroundColor, iconColor, barHeight, buttonPadding),
                 ],
               ),
             ],
@@ -246,6 +240,7 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
     Color backgroundColor,
     Color iconColor,
     double barHeight,
+    double buttonPadding,
   ) {
     return SafeArea(
       bottom: chewieController.isFullScreen,
@@ -280,6 +275,14 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
                           if (showSkipFrames) _buildSkipBack(iconColor, barHeight),
                           _buildPlayPause(controller, iconColor, barHeight),
                           if (showSkipFrames) _buildSkipForward(iconColor, barHeight),
+                          if (chewieController.allowMuting)
+                            _buildMuteButton(
+                              controller,
+                              backgroundColor,
+                              iconColor,
+                              barHeight,
+                              buttonPadding,
+                            ),
                           _buildPosition(iconColor),
                           _buildProgressBar(),
                           _buildRemaining(iconColor),
@@ -289,6 +292,13 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
                           if (chewieController.additionalOptions != null &&
                               chewieController.additionalOptions!(context).isNotEmpty)
                             _buildOptionsButton(iconColor, barHeight),
+                          if (chewieController.allowFullScreen)
+                            _buildExpandButton(
+                              backgroundColor,
+                              iconColor,
+                              barHeight,
+                              buttonPadding,
+                            ),
                         ],
                       ),
               ),
@@ -322,23 +332,19 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
         duration: const Duration(milliseconds: 300),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 10.0),
-            child: Container(
-              height: barHeight,
-              padding: EdgeInsets.only(
-                left: buttonPadding,
-                right: buttonPadding,
-              ),
-              color: backgroundColor,
-              child: Center(
-                child: Icon(
-                  chewieController.isFullScreen
-                      ? CupertinoIcons.arrow_down_right_arrow_up_left
-                      : CupertinoIcons.arrow_up_left_arrow_down_right,
-                  color: iconColor,
-                  size: 16,
-                ),
+          child: Container(
+            height: barHeight,
+            padding: EdgeInsets.only(
+              left: buttonPadding,
+              right: buttonPadding,
+            ),
+            child: Center(
+              child: Icon(
+                chewieController.isFullScreen
+                    ? CupertinoIcons.arrow_down_right_arrow_up_left
+                    : CupertinoIcons.arrow_up_left_arrow_down_right,
+                color: iconColor,
+                size: 16,
               ),
             ),
           ),
@@ -395,22 +401,16 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
         duration: const Duration(milliseconds: 300),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 10.0),
-            child: ColoredBox(
-              color: backgroundColor,
-              child: Container(
-                height: barHeight,
-                padding: EdgeInsets.only(
-                  left: buttonPadding,
-                  right: buttonPadding,
-                ),
-                child: Icon(
-                  _latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off,
-                  color: iconColor,
-                  size: 16,
-                ),
-              ),
+          child: Container(
+            height: barHeight,
+            padding: EdgeInsets.only(
+              left: buttonPadding,
+              right: buttonPadding,
+            ),
+            child: Icon(
+              _latestValue.volume > 0 ? Icons.volume_up : Icons.volume_off,
+              color: iconColor,
+              size: 16,
             ),
           ),
         ),
@@ -433,7 +433,7 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
           right: 6.0,
         ),
         child: AnimatedPlayPause(
-          color: widget.iconColor,
+          color: iconColor,
           playing: controller.value.isPlaying,
         ),
       ),

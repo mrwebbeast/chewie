@@ -38,7 +38,7 @@ class VideoFeedScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               child: ChewieVideoPlayerCard(
                 url: videoUrls[index],
-                autoPlayVideo: true,
+                autoPlayVideo: false,
                 showControls: true,
               ),
             ),
