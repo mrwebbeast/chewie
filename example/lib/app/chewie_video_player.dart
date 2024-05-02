@@ -13,7 +13,6 @@ class ChewieVideoPlayerCard extends StatefulWidget {
       {super.key,
       this.url,
       this.borderRadius,
-      this.showController,
       this.manageAspectRatio,
       this.type,
       this.demoId,
@@ -21,76 +20,86 @@ class ChewieVideoPlayerCard extends StatefulWidget {
       this.callVideoCount,
       this.autoPlayVideo,
       this.showControls,
-      this.index});
+      this.index,
+      this.manageIOSMultiPlayIssue = true});
 
   final int? index;
   final bool? manageAspectRatio;
   final String? url;
   final bool? type;
-  final bool? showController;
+
   final bool? autoPlayVideo;
   final String? demoId;
   final VoidCallback? onCompleted;
   final double? borderRadius;
   final bool? callVideoCount;
   final bool? showControls;
+  final bool? manageIOSMultiPlayIssue;
 
   @override
   State<ChewieVideoPlayerCard> createState() => _ChewieVideoPlayerCardState();
 }
 
-class _ChewieVideoPlayerCardState extends State<ChewieVideoPlayerCard> {
+class _ChewieVideoPlayerCardState extends State<ChewieVideoPlayerCard> with AutomaticKeepAliveClientMixin {
   late int? index = widget.index;
   ChewieController? chewieController;
   late bool autoPlayVideo = widget.autoPlayVideo ?? false;
   late bool showControls = widget.showControls ?? true;
+  late bool manageIOSMultiPlayIssue = widget.manageIOSMultiPlayIssue ?? true;
 
   late String? url = widget.url;
   late double? borderRadius = widget.borderRadius;
 
   @override
   void initState() {
-    super.initState();
     initVideo(context: context);
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     disposeVideo();
+    super.dispose();
   }
+
+  VideoPlayerController? videoPlayerController;
 
   Future initVideo({required BuildContext context}) async {
     disposeVideo();
-    VideoPlayerController? videoPlayerController;
     if (url != null) {
-      debugPrint('url $url');
-      videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse('$url'),
-        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false, allowBackgroundPlayback: false),
-      );
-    }
+      debugPrint('Video Url :- $url');
+      try {
+        videoPlayerController = VideoPlayerController.networkUrl(
+          Uri.parse('$url'),
+          videoPlayerOptions: VideoPlayerOptions(),
+        );
+        debugPrint("initVideo Index  $index ${videoPlayerController?.httpHeaders}");
 
-    await videoPlayerController?.initialize();
-    if (videoPlayerController != null) {
-      chewieController = ChewieController(
-        videoPlayerController: videoPlayerController,
-        autoPlay: autoPlayVideo,
-        zoomAndPan: true,
-        showOptions: false,
-        allowMuting: true,
-        draggableProgressBar: false,
-        showControls: showControls,
-        autoInitialize: true,
-        onTap: () {
-          // debugPrint('Video Player onTap Index $index');
-          FeedsController feedsController = Provider.of<FeedsController>(context, listen: false);
-          feedsController.setActiveFeedVideoIndex(index);
-        },
-        allowPlaybackSpeedChanging: false,
-        customControls: const CupertinoControls(showSkipFrames: false),
-      );
+        await videoPlayerController?.initialize();
+      } catch (e, s) {
+        debugPrint("Error $e & $s");
+        await videoPlayerController?.initialize();
+      }
 
+      if (videoPlayerController != null) {
+        chewieController = ChewieController(
+          videoPlayerController: videoPlayerController!,
+          autoPlay: autoPlayVideo,
+          zoomAndPan: true,
+          showOptions: false,
+          allowMuting: false,
+          draggableProgressBar: false,
+          showControls: showControls,
+          autoInitialize: true,
+          onTap: () {
+            // debugPrint('Video Player onTap Index $index');
+            FeedsController feedsController = Provider.of<FeedsController>(context, listen: false);
+            feedsController.setActiveFeedVideoIndex(index);
+          },
+          allowPlaybackSpeedChanging: false,
+          customControls: const CupertinoControls(showSkipFrames: false),
+        );
+      }
       setState(() {});
       chewieController?.videoPlayerController.addListener(() {
         // debugPrint('Video Player Listener Index $index');
@@ -102,7 +111,7 @@ class _ChewieVideoPlayerCardState extends State<ChewieVideoPlayerCard> {
               feedsController.setActiveFeedVideoIndex(index);
             }
 
-            if (feedsController.activeFeedVideoIndex != index) {
+            if (manageIOSMultiPlayIssue ? (feedsController.activeFeedVideoIndex != index) : false) {
               chewieController?.pause();
             }
           }
@@ -144,32 +153,32 @@ class _ChewieVideoPlayerCardState extends State<ChewieVideoPlayerCard> {
   }
 
   Future disposeVideo() async {
-    chewieController?.videoPlayerController.removeListener(() {});
-    await chewieController?.videoPlayerController.dispose();
+    videoPlayerController?.removeListener(() {});
     chewieController?.removeListener(() {});
+    videoPlayerController?.dispose();
     chewieController?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Consumer<FeedsController>(
       builder: (context, controller, child) {
         return VisibilityDetector(
           key: Key('chewieVideoManager_${index ?? 0}'),
           onVisibilityChanged: (visibility) {
             var visiblePercentage = visibility.visibleFraction * 100;
-
-            if (visibility.visibleFraction >= 0.80 && mounted) {
-              isVisible = true;
-              if (autoPlayVideo == true) {
-                chewieController?.play();
-              }
-            } else {
-              isVisible = false;
-              chewieController?.pause();
-            }
-
             if (context.mounted) {
+              if (visibility.visibleFraction >= 0.80 && mounted) {
+                isVisible = true;
+                if (autoPlayVideo == true) {
+                  chewieController?.play();
+                }
+              } else {
+                isVisible = false;
+                chewieController?.pause();
+              }
               setState(() {});
             }
 
@@ -193,6 +202,7 @@ class _ChewieVideoPlayerCardState extends State<ChewieVideoPlayerCard> {
                       child: AspectRatio(
                         aspectRatio: getAspectRatio(),
                         child: Chewie(
+                          key: Key('chewieVideoPlayer_${index ?? 0}'),
                           controller: chewieController!,
                         ),
                       ),
@@ -217,7 +227,7 @@ class _ChewieVideoPlayerCardState extends State<ChewieVideoPlayerCard> {
 
     if (widget.manageAspectRatio == true) {
       if ((videoAspectRatio ?? 0) <= 0.60) {
-        aspectRatio = 16 / 18;
+        aspectRatio = videoAspectRatio;
       } else {
         aspectRatio = defaultAspectRatio;
       }
@@ -226,4 +236,8 @@ class _ChewieVideoPlayerCardState extends State<ChewieVideoPlayerCard> {
     }
     return aspectRatio ?? defaultAspectRatio;
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

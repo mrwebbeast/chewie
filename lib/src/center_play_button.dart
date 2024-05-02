@@ -1,4 +1,5 @@
 import 'package:chewie/src/animated_play_pause.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CenterPlayButton extends StatelessWidget {
@@ -45,6 +46,47 @@ class CenterPlayButton extends StatelessWidget {
                         playing: isPlaying,
                       ),
                 onPressed: onPressed,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CenterLoading extends StatelessWidget {
+  const CenterLoading({
+    super.key,
+    required this.backgroundColor,
+    this.iconColor,
+    required this.isPlaying,
+  });
+
+  final Color backgroundColor;
+  final Color? iconColor;
+  final bool isPlaying;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: Colors.transparent,
+      child: Center(
+        child: UnconstrainedBox(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              shape: BoxShape.circle,
+            ),
+            // Always set the iconSize on the IconButton, not on the Icon itself:
+            // https://github.com/flutter/flutter/issues/52980
+            child: const Padding(
+              padding: EdgeInsets.all(12),
+              child: Center(
+                child: CupertinoActivityIndicator(
+                  color: Colors.white,
+                  radius: 12,
+                ),
               ),
             ),
           ),
