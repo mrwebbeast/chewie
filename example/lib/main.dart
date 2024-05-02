@@ -1,8 +1,9 @@
 import 'package:chewie_example/app/app.dart';
+import 'package:chewie_example/app/video_feeds_pages.dart';
 import 'package:chewie_example/controller/feeds_controller.dart';
 import 'package:flutter/material.dart';
 
-import 'app/multiple_videos.dart';
+import 'app/video_feeds_list.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -12,7 +13,7 @@ void main() {
         providers: [
           ChangeNotifierProvider(create: (context) => FeedsController()),
         ],
-        child: VideoFeedScreen(),
+        child: const VideoFeedsPage(index: 0),
       ),
     ),
   );
