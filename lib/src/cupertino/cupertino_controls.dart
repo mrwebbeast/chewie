@@ -98,8 +98,11 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
           child: Stack(
             children: [
               if (_displayBufferingIndicator)
-                const Center(
-                  child: CircularProgressIndicator(),
+                CenterLoading(
+                  backgroundColor: backgroundColor,
+                  iconColor: iconColor,
+                  isPlaying: controller.value.isPlaying,
+
                 )
               else
                 _buildHitArea(),
@@ -319,13 +322,13 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
     );
   }
 
-  GestureDetector _buildExpandButton(
+  Widget _buildExpandButton(
     Color backgroundColor,
     Color iconColor,
     double barHeight,
     double buttonPadding,
   ) {
-    return GestureDetector(
+    return InkWell(
       onTap: _onExpandCollapse,
       child: AnimatedOpacity(
         opacity: notifier.hideStuff ? 0.0 : 1.0,

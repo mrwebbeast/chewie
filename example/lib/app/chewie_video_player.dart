@@ -68,12 +68,19 @@ class _ChewieVideoPlayerCardState extends State<ChewieVideoPlayerCard> with Auto
     disposeVideo();
     if (url != null) {
       debugPrint('Video Url :- $url');
-      videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse('$url'),
-        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false, allowBackgroundPlayback: false),
-      );
+      try {
+        videoPlayerController = VideoPlayerController.networkUrl(
+          Uri.parse('$url'),
+          videoPlayerOptions: VideoPlayerOptions(),
+        );
+        debugPrint("initVideo Index  $index ${videoPlayerController?.httpHeaders}");
 
-      await videoPlayerController?.initialize();
+        await videoPlayerController?.initialize();
+      } catch (e, s) {
+        debugPrint("Error $e & $s");
+        await videoPlayerController?.initialize();
+      }
+
       if (videoPlayerController != null) {
         chewieController = ChewieController(
           videoPlayerController: videoPlayerController!,

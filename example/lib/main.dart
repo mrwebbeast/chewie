@@ -13,6 +13,8 @@ void main() {
         providers: [
           ChangeNotifierProvider(create: (context) => FeedsController()),
         ],
+
+        // child: const VideoFeedsList(),
         child: const VideoFeedsPage(index: 0),
       ),
     ),
