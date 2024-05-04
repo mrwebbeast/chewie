@@ -165,15 +165,15 @@
     },
     {
       "name": "package_info_plus",
-      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/package_info_plus-6.0.0",
+      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/package_info_plus-8.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "package_info_plus_platform_interface",
-      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-2.0.1",
+      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-3.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.18"
     },
     {
       "name": "path",
@@ -345,7 +345,7 @@
     },
     {
       "name": "wakelock_plus",
-      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/wakelock_plus-1.2.4",
+      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/wakelock_plus-1.2.5",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -363,7 +363,7 @@
     },
     {
       "name": "win32",
-      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/win32-5.4.0",
+      "rootUri": "file:///Users/mrwebbeast/.pub-cache/hosted/pub.dev/win32-5.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -380,7 +380,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-05-02T07:41:31.747123Z",
+  "generated": "2024-05-04T04:20:18.350464Z",
   "generator": "pub",
   "generatorVersion": "3.3.4"
 }
