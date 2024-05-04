@@ -13,9 +13,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  video_player: any
+  video_player: ^2.8.6
   visibility_detector: ^0.4.0+2
   url_launcher: ^6.2.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
