@@ -102,7 +102,6 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
                   backgroundColor: backgroundColor,
                   iconColor: iconColor,
                   isPlaying: controller.value.isPlaying,
-
                 )
               else
                 _buildHitArea(),
@@ -669,6 +668,7 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
       _expandCollapseTimer = Timer(const Duration(milliseconds: 300), () {
         setState(() {
           _cancelAndRestartTimer();
+          chewieController.play();
         });
       });
     });
