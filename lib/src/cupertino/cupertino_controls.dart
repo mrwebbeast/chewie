@@ -668,7 +668,7 @@ class _CupertinoControlsState extends State<CupertinoControls> with SingleTicker
       _expandCollapseTimer = Timer(const Duration(milliseconds: 300), () {
         setState(() {
           _cancelAndRestartTimer();
-          chewieController.play();
+          controller.play();
         });
       });
     });
